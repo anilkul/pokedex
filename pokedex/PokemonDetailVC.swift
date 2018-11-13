@@ -83,7 +83,7 @@ class PokemonDetailVC: UIViewController {
         
     }
 
-    // VC'ler ust uste binmesin diye geri giderken current VC'yi dismiss ediyoruz
+    
     @IBAction func backBtnPressed(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
     }

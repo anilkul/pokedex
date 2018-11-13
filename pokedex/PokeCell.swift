@@ -15,7 +15,7 @@ class PokeCell: UICollectionViewCell {
     
     var pokemon: Pokemon!
     
-    //rounded corners icin gerekli kod
+    //Rounded Corners
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         

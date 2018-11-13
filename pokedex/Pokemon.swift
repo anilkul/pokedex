@@ -190,69 +190,70 @@ class Pokemon {
                         self.typeArray.append(typeName.capitalized)
                     }
                 }
+                // Get Description
+                Alamofire.request(self._pokemonDescriptionURL).responseJSON { (response) in
+                    let result = response.result
+                    if result.isSuccess {
+                        let pokeJSON : JSON = JSON(result.value!)
+                        print("description url: \(self._pokemonDescriptionURL)")
+                        let description = pokeJSON["flavor_text_entries"][1]["flavor_text"].stringValue
+                        print("Description: \(description)")
+                        self._description = description
+                        self.URL_POKEMON_EVOLUTION = pokeJSON["evolution_chain"]["url"].stringValue
+                        print("Evo Cahin URL: \(self.URL_POKEMON_EVOLUTION)")
+                    }
+                    
+                    // Get Evolution Chain
+                    Alamofire.request(self.URL_POKEMON_EVOLUTION).responseJSON { (response) in
+                        let result = response.result
+                        if result.isSuccess {
+                            let pokeJSON : JSON = JSON(result.value!)
+                            
+                            // Get Base Evolve
+                            let baseEvoURL = pokeJSON["chain"]["species"]["url"].stringValue
+                            // Trim url to get the next evolution ID
+                            let baseEvoURLTrimmed = baseEvoURL.replacingOccurrences(of: "https://pokeapi.co/api/v2/pokemon-species/", with: "")
+                            let baseEvoIDCleared = baseEvoURLTrimmed.replacingOccurrences(of: "/", with: "")
+                            print("Base Evo ID: \(baseEvoIDCleared)")
+                            // Assign private var base Evo ID to trimmed ID
+                            self._baseEvoID = baseEvoIDCleared
+                            
+                            // Get Next Evolve
+                            let nextEvoURL = pokeJSON["chain"]["evolves_to"][0]["species"]["url"].stringValue
+                            // Trim url to get the next evolution ID
+                            let nextEvoURLTrimmed = nextEvoURL.replacingOccurrences(of: "https://pokeapi.co/api/v2/pokemon-species/", with: "")
+                            let nextEvoIDCleared = nextEvoURLTrimmed.replacingOccurrences(of: "/", with: "")
+                            print("Next Evo ID: \(nextEvoIDCleared)")
+                            // Assign private var last Evo ID to trimmed ID
+                            self._nextEvoID = nextEvoIDCleared
+                            
+                            // Get Next Evo Level
+                            let nextEvoLevel = pokeJSON["chain"]["evolves_to"][0]["evolution_details"][0]["min_level"].stringValue
+                            print("Next Evo Level: \(nextEvoLevel)")
+                            self._nextEvoLvl = nextEvoLevel
+                            
+                            // Get Last Evolve
+                            let lastEvoURL = pokeJSON["chain"]["evolves_to"][0]["evolves_to"][0]["species"]["url"].stringValue
+                            // Trim url to get the last evolution ID
+                            let lastEvoURLTrimmed = lastEvoURL.replacingOccurrences(of: "https://pokeapi.co/api/v2/pokemon-species/", with: "")
+                            let lastEvoIDCleared = lastEvoURLTrimmed.replacingOccurrences(of: "/", with: "")
+                            print("Last Evo ID: \(lastEvoIDCleared)")
+                            // Assign private var last Evo ID to trimmed ID
+                            self._lastEvoID = lastEvoIDCleared
+                            
+                            // Get Last Evo Level
+                            let lastEvoLevel = pokeJSON["chain"]["evolves_to"][0]["evolves_to"][0]["evolution_details"][0]["min_level"].stringValue
+                            print("Last Evo Level: \(lastEvoLevel)")
+                            self._lastEvoLvl = lastEvoLevel
+                            completed()
+                        }
+                    }
+                    
+                }
             }
-            completed()
+            
+            
+            
         }
-        
-        // Get Description
-        Alamofire.request(_pokemonDescriptionURL).responseJSON { (response) in
-            let result = response.result
-            if result.isSuccess {
-                let pokeJSON : JSON = JSON(result.value!)
-                print("description url: \(self._pokemonDescriptionURL)")
-                let description = pokeJSON["flavor_text_entries"][1]["flavor_text"].stringValue
-                print("Description: \(description)")
-                self._description = description
-                self.URL_POKEMON_EVOLUTION = pokeJSON["evolution_chain"]["url"].stringValue
-                print("Evo Cahin URL: \(self.URL_POKEMON_EVOLUTION)")
-            }
-            completed()
-        }
-        
-        // Get Evolution Chain
-        Alamofire.request(self.URL_POKEMON_EVOLUTION).responseJSON { (response) in
-            let result = response.result
-            if result.isSuccess {
-                let pokeJSON : JSON = JSON(result.value!)
-                
-                // Get Base Evolve
-                let baseEvoURL = pokeJSON["chain"]["species"]["url"].stringValue
-                // Trim url to get the next evolution ID
-                let baseEvoURLTrimmed = baseEvoURL.replacingOccurrences(of: "https://pokeapi.co/api/v2/pokemon-species/", with: "")
-                let baseEvoIDCleared = baseEvoURLTrimmed.replacingOccurrences(of: "/", with: "")
-                print("Base Evo ID: \(baseEvoIDCleared)")
-                // Assign private var base Evo ID to trimmed ID
-                self._baseEvoID = baseEvoIDCleared
-                
-                // Get Next Evolve
-                let nextEvoURL = pokeJSON["chain"]["evolves_to"][0]["species"]["url"].stringValue
-                // Trim url to get the next evolution ID
-                let nextEvoURLTrimmed = nextEvoURL.replacingOccurrences(of: "https://pokeapi.co/api/v2/pokemon-species/", with: "")
-                let nextEvoIDCleared = nextEvoURLTrimmed.replacingOccurrences(of: "/", with: "")
-                print("Next Evo ID: \(nextEvoIDCleared)")
-                // Assign private var last Evo ID to trimmed ID
-                self._nextEvoID = nextEvoIDCleared
-                
-                // Get Next Evo Level
-                let nextEvoLevel = pokeJSON["chain"]["evolves_to"][0]["evolution_details"][0]["min_level"].stringValue
-                print("Next Evo Level: \(nextEvoLevel)")
-                self._nextEvoLvl = nextEvoLevel
-                
-                // Get Last Evolve
-                let lastEvoURL = pokeJSON["chain"]["evolves_to"][0]["evolves_to"][0]["species"]["url"].stringValue
-                // Trim url to get the last evolution ID
-                let lastEvoURLTrimmed = lastEvoURL.replacingOccurrences(of: "https://pokeapi.co/api/v2/pokemon-species/", with: "")
-                let lastEvoIDCleared = lastEvoURLTrimmed.replacingOccurrences(of: "/", with: "")
-                print("Last Evo ID: \(lastEvoIDCleared)")
-                // Assign private var last Evo ID to trimmed ID
-                self._lastEvoID = lastEvoIDCleared
-                
-                // Get Last Evo Level
-                let lastEvoLevel = pokeJSON["chain"]["evolves_to"][0]["evolves_to"][0]["evolution_details"][0]["min_level"].stringValue
-                print("Last Evo Level: \(lastEvoLevel)")
-                self._lastEvoLvl = lastEvoLevel
-            }
-        }
-        completed()
     }
 }

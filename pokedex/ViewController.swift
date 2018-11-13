@@ -7,9 +7,9 @@
 //
 
 import UIKit
-import AVFoundation //muzik icin
+import AVFoundation
 
-//Kullanacagimiz Collection View Protokollerini girelim
+
 class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
 
     @IBOutlet weak var collection: UICollectionView!
@@ -20,7 +20,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     var inSearchMode = false //searchbar'a bir sey girildi ise aktive olacak boolean. Arama aktif ise filteredPokemonList'i goster gibi komutlar verecegiz
     var musicPlayer: AVAudioPlayer!
 
-    // segue olustururken TableView Cell'den degil de generic olarak ana VC'den segue olusturmaliyiz. TableView Cell'den segue alirsan data aktarimi yapamayiz cunku segue kodun kendisinden degil de ViewController'dan cagirilmis olur.
+    // segue olustururken TableView Cell'den degil de generic olarak ana VC'den segue olusturmaliyiz. TableView Cell'den segue alirsak data aktarimi yapamayiz cunku segue kodun kendisinden degil de ViewController'dan cagirilmis olur.
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -55,7 +55,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         let path = Bundle.main.path(forResource: "pokemon", ofType: "csv")!
         
         do {
-            //CSV dosyamizi, Mark Price'in yadigi CSV classi yardimi ile aliyoruz
+            //CSV dosyamizi, Mark Price'in yazdigi CSV classi yardimi ile aliyoruz
             let csv = try CSV(contentsOfURL: path)
             let rows = csv.rows //classtaki row metodunu kullanarak tum rowlari cekiyoruz
             
@@ -78,9 +78,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        //yuklenecek cell kismini ayarla. dequeue, queue'yi boz anlaminda. Tum cell'ler bir anda yuklenmeye calisilirsa crash aliriz.
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PokeCell", for: indexPath) as? PokeCell {
-            
             
             let pokemonInList: Pokemon!
             
@@ -101,7 +99,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
     }
     
-    //Itemi sectigimizde islem yapilabilmesini saglayan fonksiyon didSelectItemAt
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         var pokemonDetail: Pokemon!
         if inSearchMode {
@@ -130,7 +127,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         return CGSize(width: 105, height: 105)
     }
     
-    // Background music icin on off tusu kontrolcusunu yazalim
+    // Background music icin on off tusu kontrolcusu
     @IBAction func musicBtnPressed(_ sender: UIButton) {
         if musicPlayer.isPlaying {
             musicPlayer.pause()
@@ -166,7 +163,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
     }
     
-    //segue'ye hazirlan, anyObject gonderilebiliyor
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
         if segue.identifier == "PokemonDetailSegue" {
